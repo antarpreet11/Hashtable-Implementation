@@ -21,9 +21,10 @@ int Openhttest::hash2( int key ) {
 
 std::string Openhttest::insert( int key, std::string lName ) {
 
-    //add condition to check if vector is full
-
-
+    int len = this->v1.size();
+    if(len == this->n) {
+        return "failure";
+    }
 
     for( int i = 0 ; i < this->n ; i++ ) {
         if( this->v1[i].key == key ) {

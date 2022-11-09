@@ -10,6 +10,7 @@ Hashtable::Hashtable() {
 Hashtable::~Hashtable() {
     this->n = 0;
     this->v1.clear();
+    delete [] a1;
 }
 
 void Hashtable::create1( int num ) {

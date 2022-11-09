@@ -14,10 +14,6 @@ class Node {
         this->key = 0;
         this->data = "";
     }
-    Node( int k, std::string d ) {
-        this->key = k;
-        this->data = d;
-    }
 };
 
 class Hashtable {

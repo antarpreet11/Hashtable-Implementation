@@ -15,15 +15,22 @@ std::string Orderedhttest::insert( int key, std::string lName ) {
     
     int index = this->hash1( key );
     int len = this->a1[index].size();
+    int pos = 0;
 
     for(int i = 0; i < len; i++) {
         if(this->a1[index][i].key == key) {
             return "failure";
         }
+        if(this->a1[index][i].key < key) {
+            pos = i + 1;
+        }
     }
-    this->a1[index].resize(len + 1);
-    this->a1[index][len].key = key;
-    this->a1[index][len].data = lName;
+
+    Node n1;
+    n1.key = key;
+    n1.data = lName;
+    this->a1[index].insert(this->a1[index].begin() + pos, n1);
+    
     return "success";
     
 }
@@ -44,13 +51,34 @@ std::string Orderedhttest::search( int key ) {
 
 std::string Orderedhttest::del( int key ) {
     
+    int index = this->hash1( key );
+    int len = this->a1[index].size();
+
+    if(len == 0) {
+        return "failure";    
+    }
+
+    for(int i = 0; i < len; i++) {
+        if(this->a1[index][i].key == key) {
+            this->a1[index].erase(this->a1[index].begin() + i);
+            return "success";
+        }
+    }
+
     return "failure";
 }
 
 void Orderedhttest::print( int index ) {
-    
-    for( int i = 0; i < this->a1[index].size(); i++ ) {
-        std::cout << std::to_string(this->a1[index][i].key) + " ";
+
+    if(this->a1[index].size() == 0) {
+        std::cout << "chain is empty" << std::endl;
+    }
+    else {
+        std::cout << std::to_string(this->a1[index][0].key);
+        for( int i = 1; i < this->a1[index].size(); i++ ) {
+            std::cout << " " + std::to_string(this->a1[index][i].key);
+        }
+        std::cout << std::endl;
     }
 }
 

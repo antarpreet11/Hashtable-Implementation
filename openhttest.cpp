@@ -5,70 +5,68 @@
 
 class Openhttest: public Hashtable {
     public: 
+    int hash2( int key );
     std::string insert( int key, std::string lName );
     std::string search( int key );
     std::string del( int key );
 };
 
+int Openhttest::hash2( int key ) {
+    int h2 = abs(key / this->n) % this->n;
+    if(h2 % 2 == 0) {
+        h2 = h2 + 1;
+    }
+    return h2;
+}
+
 std::string Openhttest::insert( int key, std::string lName ) {
-    
-    for( int i = 0; i < this->n ; i++ ) {
+
+    //add condition to check if vector is full
+
+
+
+    for( int i = 0 ; i < this->n ; i++ ) {
         if( this->v1[i].key == key ) {
             return "failure";
         }
     }
 
-    int index = key % this->n;
-    for(int i = index; i < this->n ; i++) {
-        if( this->v1[i].key == 0 ) {
-            this->v1[i].data = lName;
-            this->v1[i].key = key;
+    for( int i = 0 ; i < this->n ; i++ ) {
+        int index = (this->hash1( key ) + (i * this->hash2( key ))) % this->n;
+        // std::cout << std::to_string(this->hash1(key)) + " " + std::to_string( i ) + " times " + std::to_string(this->hash2( key )) + " mod " + std::to_string( this->n ) << std::endl;
+        if(this->v1[index].key == 0) {
+            this->v1[index].key = key;
+            this->v1[index].data = lName;
             return "success";
         }
     }
-    for(int i = 0; i < index; i++) {
-        if( this->v1[i].key == 0 ) {
-            this->v1[i].data = lName;
-            this->v1[i].key = key;
-            return "success";
-        }
-    }
+    
     return "failure";
 }
 
 std::string Openhttest::search( int key ) {
-    int index = key % this->n;
+    
+    for( int i = 0 ; i < this->n ; i++ ) {
+        int index = (this->hash1( key ) + (i * this->hash2( key ))) % this->n;
+        if(this->v1[index].key == key) {
+            return "found " + this->v1[index].data + " in " + std::to_string(index);
+        }
+    }
 
-    for(int i = index; i < this->n ; i++) {
-        if( this->v1[i].key == key ) {
-            return "found " + this->v1[i].data + " in " + i;
-        }
-    }
-    for(int i = 0; i < index; i++) {
-        if( this->v1[i].key == key ) {
-            return "found " + this->v1[i].data + " in " + i;
-        }
-    }
     return "not found";
 }
 
 std::string Openhttest::del( int key ) {
-    int index = key % this->n;
+   
+    for( int i = 0 ; i < this->n ; i++ ) {
+        int index = (this->hash1( key ) + (i * this->hash2( key ))) % this->n;
+        if(this->v1[index].key == key) {
+            this->v1[index].key = 0;
+            this->v1[index].data = "";
+            return "success";
+        }
+    }
 
-    for(int i = index; i < this->n ; i++) {
-        if( this->v1[i].key == key ) {
-            this->v1[i].key = 0;
-            this->v1[i].data = "";
-            return "success";
-        }
-    }
-    for(int i = 0; i < index; i++) {
-        if( this->v1[i].key == key ) {
-            this->v1[i].key = 0;
-            this->v1[i].data = "";
-            return "success";
-        }
-    }
     return "failure";
 }
 
@@ -87,7 +85,7 @@ int main() {
             std::string input = inp.substr(2);
             if(inst == 'm') {
                 int n = stoi(input);
-                o1.create(n);
+                o1.create1(n);
             }
             else if(inst == 'i') {
                 int sp = input.find_first_of(" ");
@@ -95,12 +93,13 @@ int main() {
                 std::string name = input.substr(sp + 1, input.length() - sp - 1);
                 std::cout << o1.insert(key, name) << std::endl;
             }
-            input = stoi(input);
             else if(inst == 's') {
-                std::cout << o1.search(input) << std::endl;
+                int n = stoi(input);
+                std::cout << o1.search(n) << std::endl;
             }
             else if(inst == 'd') {
-                std::cout << o1.del(input) << std::endl;
+                int n = stoi(input);
+                std::cout << o1.del(n) << std::endl;
             }
         }
 
